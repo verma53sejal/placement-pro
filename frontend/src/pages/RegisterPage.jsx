@@ -5,6 +5,20 @@ import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
 import { FiUser, FiMail, FiLock, FiBookOpen, FiTarget } from 'react-icons/fi';
 
+// ✅ FIX: Field must be defined OUTSIDE the RegisterPage component.
+// When defined inside, React creates a brand-new component type on every
+// state update (keystroke), causing the input to unmount/remount and
+// losing focus after each character typed.
+const Field = ({ label, icon: Icon, ...props }) => (
+  <div style={{ marginBottom: 14 }}>
+    <label style={{ fontSize: 13, color: 'var(--text-secondary)', display: 'block', marginBottom: 6 }}>{label}</label>
+    <div style={{ position: 'relative' }}>
+      <Icon style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)', zIndex: 1 }} size={15} />
+      <input {...props} style={{ paddingLeft: 40 }} />
+    </div>
+  </div>
+);
+
 export default function RegisterPage() {
   const [form, setForm] = useState({ username: '', email: '', password: '', fullName: '', college: '' });
   const [loading, setLoading] = useState(false);
@@ -23,16 +37,6 @@ export default function RegisterPage() {
       toast.error(err.response?.data?.message || 'Registration failed');
     } finally { setLoading(false); }
   };
-
-  const Field = ({ label, icon: Icon, ...props }) => (
-    <div style={{ marginBottom: 14 }}>
-      <label style={{ fontSize: 13, color: 'var(--text-secondary)', display: 'block', marginBottom: 6 }}>{label}</label>
-      <div style={{ position: 'relative' }}>
-        <Icon style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)', zIndex: 1 }} size={15} />
-        <input {...props} style={{ paddingLeft: 40 }} />
-      </div>
-    </div>
-  );
 
   return (
     <div style={{
